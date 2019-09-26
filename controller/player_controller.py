@@ -225,22 +225,6 @@ def total_artists():
     return jsonify(result)
 
 
-@player_controller.route("/total/genres")
-def total_genres():
-    """
-    流派总数
-    """
-    result = copy.copy(success_json)
-    try:
-        global SERVER
-        total = str(SERVER.request("info total genres ?")).strip()
-        result["count"] = total
-    except Exception, exp:
-        result = fail_json
-        result["error"] = exp.message
-    return jsonify(result)
-
-
 @player_controller.route("/total/albums")
 def total_albums():
     """
@@ -323,12 +307,167 @@ def get_current_info():
             "album": PLAYER.get_track_album(),
             "artist": PLAYER.get_track_artist(),
             "title": PLAYER.get_track_title(),
-            "genre": PLAYER.get_track_genre(),
             "total_time": PLAYER.get_track_duration(),
             "path": PLAYER.get_track_path().replace("%20", " "),
             "current_time": PLAYER.get_time_remaining()
         }
         result["data"] = data
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/set/volume")
+def set_volume():
+    """
+    设置音量
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        volume = request.args.get("volume")
+        PLAYER.set_volume(volume)
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/add/song")
+def playlist_add_song():
+    """
+    播放列表添加歌曲
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        global SERVER
+        track_id = request.args.get("track_id")
+        PLAYER.playlist_add(SERVER.get_path(track_id))
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/delete/song")
+def playlist_delete_song():
+    """
+    播放列表删除歌曲
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        global SERVER
+        track_id = request.args.get("track_id")
+        PLAYER.playlist_delete(SERVER.get_path(track_id))
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/clear")
+def playlist_clear():
+    """
+    播放列表清空歌曲
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        PLAYER.playlist_clear()
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/add/album")
+def playlist_add_album():
+    """
+    将某个专辑或艺术家添加到播放列表中
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        album_name = request.args.get("album_name")
+        artist_name = request.args.get("artist_name")
+        PLAYER.playlist_addalbum(album=album_name, artist=artist_name)
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/load/album")
+def playlist_load_album():
+    """
+    立即播放某个专辑
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        album_name = request.args.get("album_name")
+        artist_name = request.args.get("artist_name")
+        PLAYER.playlist_loadalbum(album=album_name, artist=artist_name)
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/play/next")
+def play_next():
+    """
+    播放下一首
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        PLAYER.next()
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/play/prev")
+def play_prev():
+    """
+    播放上一首
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        PLAYER.prev()
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/playlist/info")
+def playlist_info():
+    """
+    当前播放列表信息
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        data = PLAYER.playlist_get_info()
+        for temp in data:
+            temp["title"] = str(temp["title"]).encode("utf8")
+        result["songs"] = data
     except Exception, exp:
         result = fail_json
         result["error"] = exp.message

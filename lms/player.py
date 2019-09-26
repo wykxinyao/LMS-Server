@@ -381,7 +381,7 @@ class Player(object):
                     item[key] = ':'.join(info)
             item['position'] = int(item['position'])
             item['id'] = int(item['id'])
-            item['duration'] = float(item['duration'])
+            # item['duration'] = float(item['duration'])
             playlist.append(item)
         return playlist
 
