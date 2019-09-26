@@ -4,7 +4,6 @@
 import telnetlib
 import urllib
 from player import Player
-from song import Song
 
 
 class Server(object):
@@ -215,6 +214,53 @@ class Server(object):
         Return current rescan progress
         """
         return self.request_with_results("rescanprogress")
+
+    def get_path(self, track_id):
+        """
+        根据歌曲ID获得歌曲路径
+        :param track_id:
+        :return:
+        """
+        response = self.request("songinfo 0 100 track_id:%s tags:u" % track_id)
+        path = response.split("url:")[1].replace("%20", " ")
+        return path
+
+    def find_songs(self, album_id, artist_id, genre_id):
+        """
+        find songs
+        :param album_id:
+        :param artist_id:
+        :param genre_id:
+        :return:
+        """
+        base_command = "songs 0 9999999"
+        if album_id is not None:
+            base_command += " album_id:%s" % album_id
+        if artist_id is not None:
+            base_command += " artist_id:%s" % artist_id
+        if genre_id is not None:
+            base_command += " genre_id:%s" % genre_id
+        print base_command
+        response = str(self.request(base_command))
+        temp = response.split("id:")[1:]
+        data = []
+        for info in temp:
+            song = {}
+            string = info.decode("utf-8")
+            song_id = string.split(" title:")[0]
+            title = string.split(" genre:")[0].split("title:")[1]
+            genre = string.split(" artist:")[0].split("genre:")[1]
+            artist = string.split(" album:")[0].split("artist:")[1]
+            album = string.split(" duration:")[0].split("album:")[1]
+            duration = string.split("duration:")[1].strip()
+            song["song_id"] = song_id
+            song["title"] = title
+            song["genre"] = genre
+            song["artist"] = artist
+            song["album"] = album
+            song["duration"] = duration
+            data.append(song)
+        return data
 
     def get_all_songs(self):
         """

@@ -69,7 +69,7 @@ def list_all():
         index = 0
         for _ in songs:
             if index < count:
-                if page * 50 <= index <= (page + 1) * 50:
+                if page * 50 <= index < (page + 1) * 50:
                     data.append(songs[index])
             index += 1
         result["songs"] = data
@@ -267,6 +267,68 @@ def total_songs():
         global SERVER
         total = str(SERVER.request("info total songs ?")).strip()
         result["count"] = total
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/find/songs")
+def find_songs():
+    """
+    根据条件查找歌曲
+    """
+    result = copy.copy(success_json)
+    try:
+        global SERVER
+        album_id = request.args.get("album_id")
+        artist_id = request.args.get("artist_id")
+        genre_id = request.args.get("genre_id")
+        songs = SERVER.find_songs(album_id=album_id, artist_id=artist_id, genre_id=genre_id)
+        result["songs"] = songs
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/play/song")
+def play_song():
+    """
+    根据歌曲ID播放
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global SERVER
+        global PLAYER
+        track_id = request.args.get("track_id")
+        PLAYER.playlist_play(SERVER.get_path(track_id))
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/current/info")
+def get_current_info():
+    """
+    获得当前播放歌曲的信息
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        data = {
+            "album": PLAYER.get_track_album(),
+            "artist": PLAYER.get_track_artist(),
+            "title": PLAYER.get_track_title(),
+            "genre": PLAYER.get_track_genre(),
+            "total_time": PLAYER.get_track_duration(),
+            "path": PLAYER.get_track_path().replace("%20", " "),
+            "current_time": PLAYER.get_time_remaining()
+        }
+        result["data"] = data
     except Exception, exp:
         result = fail_json
         result["error"] = exp.message

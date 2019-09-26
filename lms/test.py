@@ -45,7 +45,6 @@ server = Server(hostname="192.168.0.104", port=9090)
 server.connect()
 player = server.get_player("Opera")
 
-print server.get_all_songs()[15]
-print player.request("titles 0 1000")
-# print player.request("musicfolder 0 100 folder_id:270")
+print server.request("title ? ")
+# print player.request("musicfolder 0 100 recursive:1 ")
 # print server.request("songinfo 0 10000 track_id:241")
