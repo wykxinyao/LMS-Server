@@ -225,15 +225,13 @@ class Server(object):
         path = response.split("url:")[1].replace("%20", " ")
         return path
 
-    def find_songs(self, album_id, artist_id, genre_id):
+    def find_songs(self, track_id, album_id, artist_id, genre_id):
         """
         find songs
-        :param album_id:
-        :param artist_id:
-        :param genre_id:
-        :return:
         """
         base_command = "songs 0 9999999"
+        if track_id is not None:
+            base_command += " track_id:%s" % track_id
         if album_id is not None:
             base_command += " album_id:%s" % album_id
         if artist_id is not None:

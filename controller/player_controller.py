@@ -265,10 +265,11 @@ def find_songs():
     result = copy.copy(success_json)
     try:
         global SERVER
+        track_id = request.args.get("track_id")
         album_id = request.args.get("album_id")
         artist_id = request.args.get("artist_id")
         genre_id = request.args.get("genre_id")
-        songs = SERVER.find_songs(album_id=album_id, artist_id=artist_id, genre_id=genre_id)
+        songs = SERVER.find_songs(track_id=track_id,album_id=album_id, artist_id=artist_id, genre_id=genre_id)
         result["songs"] = songs
     except Exception, exp:
         result = fail_json
