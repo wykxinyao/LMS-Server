@@ -178,13 +178,16 @@ class Server(object):
         """
         if mode == 'albums':
             return self.request_with_results(
-                "albums 0 50 tags:%s search:%s" % ("l", term))
+                "albums 0 9999999 tags:%s search:%s" % ("l", term))
         elif mode == 'songs':
             return self.request_with_results(
-                "songs 0 50 tags:%s search:%s" % ("", term))
+                "songs 0 9999999 tags:%s search:%s" % ("", term))
         elif mode == 'artists':
             return self.request_with_results(
-                "artists 0 50 search:%s" % term)
+                "artists 0 9999999 search:%s" % term)
+
+    def get_all_albums(self):
+        return self.request_with_results("albums 0 9999999")
 
     def rescan(self, mode='fast'):
         """

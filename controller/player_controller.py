@@ -103,8 +103,12 @@ def search_albums():
     result = copy.copy(success_json)
     try:
         global SERVER
-        albums = urllib.quote(str(request.args.get("albums")))
-        result["albums"] = SERVER.search(albums, mode="albums")
+        albums = request.args.get("albums")
+        if albums is None or albums is "":
+            result["albums"] = SERVER.get_all_albums()
+        else:
+            albums = urllib.quote(str(request.args.get("albums")))
+            result["albums"] = SERVER.search(albums, mode="albums")
     except Exception, exp:
         result = fail_json
         result["error"] = exp.message
@@ -269,7 +273,7 @@ def find_songs():
         album_id = request.args.get("album_id")
         artist_id = request.args.get("artist_id")
         genre_id = request.args.get("genre_id")
-        songs = SERVER.find_songs(track_id=track_id,album_id=album_id, artist_id=artist_id, genre_id=genre_id)
+        songs = SERVER.find_songs(track_id=track_id, album_id=album_id, artist_id=artist_id, genre_id=genre_id)
         result["songs"] = songs
     except Exception, exp:
         result = fail_json
@@ -330,6 +334,23 @@ def set_volume():
         global PLAYER
         volume = request.args.get("volume")
         PLAYER.set_volume(volume)
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/get/volume")
+def get_volume():
+    """
+    获取音量
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        volume = PLAYER.get_volume()
+        result["volume"] = volume
     except Exception, exp:
         result = fail_json
         result["error"] = exp.message
