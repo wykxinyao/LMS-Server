@@ -552,3 +552,45 @@ def random_play():
         result = fail_json
         result["error"] = exp.message
     return jsonify(result)
+
+
+@player_controller.route("/play/seek")
+def seek_to():
+    """
+    跳转播放进度
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        second = request.args.get("second")
+        PLAYER.seek_to(second)
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/play/mode")
+def repeat_mode():
+    """
+    重复模式
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        mode = int(request.args.get("mode"))
+        if mode == 0:
+            # 播放一遍
+            PLAYER.request("playlist repeat 0 ")
+        elif mode == 1:
+            # 单曲循环
+            PLAYER.request("playlist repeat 1 ")
+        elif mode == 2:
+            # 列表循环
+            PLAYER.request("playlist repeat 2 ")
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
