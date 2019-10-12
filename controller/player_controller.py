@@ -319,7 +319,7 @@ def get_current_info():
         result["data"] = data
     except Exception, exp:
         result = fail_json
-        result["error"] = exp.message
+        result["error"] = exp
     return jsonify(result)
 
 
@@ -386,6 +386,7 @@ def playlist_delete_song():
         global PLAYER
         global SERVER
         track_id = request.args.get("track_id")
+        print SERVER.get_path(track_id)
         PLAYER.playlist_delete(SERVER.get_path(track_id))
     except Exception, exp:
         result = fail_json
@@ -490,6 +491,63 @@ def playlist_info():
         for temp in data:
             temp["title"] = str(temp["title"]).encode("utf8")
         result["songs"] = data
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/folder/list")
+def get_music_folder():
+    """
+    查找所有播放文件夹
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global SERVER
+        folder_id = request.args.get("folder_id")
+        response = None
+        if folder_id is None:
+            response = SERVER.request("musicfolder 0 999999 ")
+        else:
+            response = SERVER.request("musicfolder 0 999999 folder_id:%s " % folder_id)
+        data = []
+        temp = response.split("id:")[1:]
+        for item in temp:
+            if "count:" in item:
+                item = item.split(" count:")[0]
+            info = {}
+            folder_type = str(item.split("type:")[1]).strip()
+            info["type"] = folder_type
+            if "folder" in folder_type:
+                info["folder_id"] = item.split(" filename")[0].strip()
+            elif "track" in folder_type:
+                info["track_id"] = item.split(" filename")[0].strip()
+            filename = item.split("filename:")[1].split(" type")[0]
+            info["filename"] = filename
+            data.append(info)
+        result["data"] = data
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/play/random")
+def random_play():
+    """
+    随机播放（直接替换当前播放列表）
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        mode = request.args.get("mode")
+        if "tracks" in mode:
+            PLAYER.request("randomplay tracks ")
+        if "albums" in mode:
+            PLAYER.request("randomplay albums ")
     except Exception, exp:
         result = fail_json
         result["error"] = exp.message

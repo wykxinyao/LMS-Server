@@ -41,10 +41,7 @@ except Exception as e:
 from lms.server import Server
 from lms.player import Player
 
-server = Server(hostname="192.168.0.108", port=9090)
+server = Server(hostname="192.168.0.103", port=9090)
 server.connect()
-# player = server.get_player("Opera")
-# print player.playlist_get_info()
-# player.play()
-print server.request("albums 0 50 tags:l search:Lover")
-# print player.request("musicfolder 0 100 recursive:1 ")
+player = server.get_player("Opera")
+print player.get_model()
