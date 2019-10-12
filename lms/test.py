@@ -44,5 +44,4 @@ from lms.player import Player
 server = Server(hostname="192.168.0.103", port=9090)
 server.connect()
 player = server.get_player("Opera")
-print player.get_model()
-print player.request("playlist repeat 2 ")
+print player.seek_to("70")

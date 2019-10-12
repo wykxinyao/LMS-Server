@@ -309,6 +309,7 @@ def get_current_info():
     try:
         global PLAYER
         data = {
+            "player_id": PLAYER.get_ref(),
             "album": PLAYER.get_track_album(),
             "artist": PLAYER.get_track_artist(),
             "title": PLAYER.get_track_title(),
@@ -507,7 +508,6 @@ def get_music_folder():
     try:
         global SERVER
         folder_id = request.args.get("folder_id")
-        response = None
         if folder_id is None:
             response = SERVER.request("musicfolder 0 999999 ")
         else:

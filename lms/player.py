@@ -287,6 +287,7 @@ class Player(object):
         self.track_remote = (remote != 0)
         return self.track_remote
 
+
     def get_track_current_title(self):
         """Get Players Current Track Current Title"""
         self.track_current_title = str(self.request("current_title ?"))
