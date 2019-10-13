@@ -306,8 +306,8 @@ def get_current_info():
     :return:
     """
     result = copy.copy(success_json)
+    global PLAYER
     try:
-        global PLAYER
         data = {
             "player_id": PLAYER.get_ref(),
             "album": PLAYER.get_track_album(),
@@ -317,10 +317,17 @@ def get_current_info():
             "path": PLAYER.get_track_path().replace("%20", " "),
             "current_time": PLAYER.get_time_remaining()
         }
-        result["data"] = data
-    except Exception, exp:
-        result = fail_json
-        result["error"] = exp
+    except Exception:
+        data = {
+            "player_id": "0",
+            "album": "未知",
+            "artist": "未知",
+            "title": "未知",
+            "total_time": "0",
+            "path": "/",
+            "current_time": "未知"
+        }
+    result["data"] = data
     return jsonify(result)
 
 
