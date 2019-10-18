@@ -601,3 +601,115 @@ def repeat_mode():
         result = fail_json
         result["error"] = exp.message
     return jsonify(result)
+
+
+@player_controller.route("/radio/local/list")
+def radio_local_list():
+    """
+    获取本地电台
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        data = []
+        response = str(PLAYER.request("local items 0 999 ")).split(" count:")[0]
+        result["title"] = response.split("title:")[1].split(" id:")[0]
+        temp_id = response.split("id:")[1].split(" name:")[0].strip()
+        response = str(PLAYER.request("local items 0 999 item_id:" + temp_id + " ")).split(" count:")[0]
+        temp = response.split("id:")[2:]
+        temp_data = {}
+        for item in temp:
+            the_id = item.split(" name:")[0].strip()
+            temp_data["item_id"] = the_id
+            name = item.split(" name:")[1].split(" type:")[0].strip()
+            temp_data["name"] = name
+            the_type = item.split(" type:")[1].split(" image:")[0].strip()
+            temp_data["type"] = the_type
+            image = item.split(" image:")[1].split(" isaudio:")[0].strip()
+            temp_data["image"] = image
+            is_audio = item.split(" isaudio:")[1].split(" hasitems:")[0].strip()
+            temp_data["is_audio"] = is_audio
+            has_items = item.split(" hasitems:")[1].strip()
+            temp_data["has_items"] = has_items
+            item.split(" type")
+            data.append(temp_data)
+            temp_data = {}
+        result["data"] = data
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/radio/local/play")
+def radio_local_play():
+    """
+    播放本地电台
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        item_id = request.args.get("item_id")
+        PLAYER.request("local playlist play item_id:" + item_id + " ")
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/radio/music/list")
+def radio_music_list():
+    """
+    获取音乐电台
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        data = []
+        item_id = request.args.get("item_id")
+        if item_id is None:
+            response = str(PLAYER.request("music items 0 999 ")).split(" count:")[0]
+        else:
+            response = str(PLAYER.request("music items 0 999 item_id:"+item_id+" ")).split(" count:")[0]
+        result["title"] = response.split("title:")[1].split(" id:")[0]
+        temp = response.split("id:")[1:]
+        temp_data = {}
+        for item in temp:
+            the_id = item.split(" name:")[0].strip()
+            temp_data["item_id"] = the_id
+            name = item.split(" name:")[1].split(" type:")[0].strip()
+            temp_data["name"] = name
+            the_type = item.split(" type:")[1].split(" isaudio:")[0].strip()
+            temp_data["type"] = the_type
+            is_audio = item.split(" isaudio:")[1].split(" hasitems:")[0].strip()
+            temp_data["is_audio"] = is_audio
+            has_items = item.split(" hasitems:")[1].strip()
+            temp_data["has_items"] = has_items
+            item.split(" type")
+            data.append(temp_data)
+            temp_data = {}
+        result["data"] = data
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/radio/music/play")
+def radio_music_play():
+    """
+    播放音乐电台
+    :return:
+    """
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+        item_id = request.args.get("item_id")
+        PLAYER.request("music playlist play item_id:" + item_id + " ")
+    except Exception, exp:
+        result = fail_json
+        result["error"] = exp.message
+    return jsonify(result)

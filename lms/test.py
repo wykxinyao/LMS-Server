@@ -41,7 +41,17 @@ except Exception as e:
 from lms.server import Server
 from lms.player import Player
 
-server = Server(hostname="192.168.0.103", port=9090)
+server = Server(hostname="192.168.0.112", port=9090)
 server.connect()
 player = server.get_player("Opera")
-print player.seek_to("70")
+print player.plugins()
+# print player.request("presets items 0 999 item_id")
+print player.request("music items 0 999 item_id:3857457a.0 ")
+# player.request("local playlist play item_id:6684f6cf.1.0.0 ")
+# print player.request("music items 0 999 ")
+# print player.request("sports items 0 999 ")
+# print player.request("news items 0 999 ")
+# print player.request("talk items 0 999 ")
+# print player.request("world items 0 999 ")
+# print player.request("search items 0 999 ")
+# print player.request("sports playlist play item_id:5c811521.0 ")

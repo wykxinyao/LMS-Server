@@ -287,7 +287,6 @@ class Player(object):
         self.track_remote = (remote != 0)
         return self.track_remote
 
-
     def get_track_current_title(self):
         """Get Players Current Track Current Title"""
         self.track_current_title = str(self.request("current_title ?"))
@@ -635,6 +634,29 @@ class Player(object):
     def unsync(self):
         """Unsync player"""
         self.request("sync -")
+
+    def plugins(self):
+        """
+        获取所有的插件
+        :return:
+        """
+        response = self.request("radios 0 999 ")
+        temp = (response.split("sort:weight count:8 ")[1]).strip()
+        temp = " " + temp
+        new_str = temp.replace(" name:", "#name  ").replace(" icon:", "#icon  ").replace(" weight:", "#weight").replace(
+            " type:", "#type  ").replace(" cmd:", "#cmd   ")
+        result = (new_str.split("#"))
+        i = 1
+        data = []
+        temp_result = {}
+        for s in result:
+            if s.strip() != "":
+                temp_result[str(s[0:6]).strip()] = str(s[6:len(s)].strip())
+                if i % 5 == 0:
+                    data.append(temp_result)
+                    temp_result = {}
+                i = i + 1
+        return data
 
     def __quote(self, text):
         try:
