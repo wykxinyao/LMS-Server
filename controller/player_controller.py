@@ -34,7 +34,7 @@ def connect():
         SERVER.connect()
         result["server_version"] = SERVER.get_version()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -49,7 +49,7 @@ def disconnect():
         global SERVER
         SERVER.disconnect()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -74,7 +74,7 @@ def list_all():
             index += 1
         result["songs"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -90,7 +90,7 @@ def search_songs():
         songs = urllib.quote(str(request.args.get("songs")))
         result["songs"] = SERVER.search(songs, mode="songs")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -110,7 +110,7 @@ def search_albums():
             albums = urllib.quote(str(request.args.get("albums")))
             result["albums"] = SERVER.search(albums, mode="albums")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -126,7 +126,7 @@ def search_artist():
         artists = urllib.quote(str(request.args.get("artists")))
         result["artists"] = SERVER.search(artists, mode="artists")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -146,7 +146,7 @@ def get_players():
             data[PLAYER.get_name()] = player
         result["players"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -163,7 +163,7 @@ def set_player():
         PLAYER = SERVER.get_player(player)
         result["player_name"] = PLAYER.get_name()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -178,7 +178,7 @@ def rescan():
         global SERVER
         SERVER.rescan()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -193,7 +193,7 @@ def play():
         global PLAYER
         PLAYER.play()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -208,7 +208,7 @@ def pause():
         global PLAYER
         PLAYER.pause()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -224,7 +224,7 @@ def total_artists():
         total = str(SERVER.request("info total artists ?")).strip()
         result["count"] = total
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -240,7 +240,7 @@ def total_albums():
         total = str(SERVER.request("info total albums ?")).strip()
         result["count"] = total
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -256,7 +256,7 @@ def total_songs():
         total = str(SERVER.request("info total songs ?")).strip()
         result["count"] = total
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -276,7 +276,7 @@ def find_songs():
         songs = SERVER.find_songs(track_id=track_id, album_id=album_id, artist_id=artist_id, genre_id=genre_id)
         result["songs"] = songs
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -294,7 +294,7 @@ def play_song():
         track_id = request.args.get("track_id")
         PLAYER.playlist_play(SERVER.get_path(track_id))
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -343,7 +343,7 @@ def set_volume():
         volume = request.args.get("volume")
         PLAYER.set_volume(volume)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -360,7 +360,7 @@ def get_volume():
         volume = PLAYER.get_volume()
         result["volume"] = volume
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -378,7 +378,7 @@ def playlist_add_song():
         track_id = request.args.get("track_id")
         PLAYER.playlist_add(SERVER.get_path(track_id))
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -397,7 +397,7 @@ def playlist_delete_song():
         print SERVER.get_path(track_id)
         PLAYER.playlist_delete(SERVER.get_path(track_id))
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -413,7 +413,7 @@ def playlist_clear():
         global PLAYER
         PLAYER.playlist_clear()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -431,7 +431,7 @@ def playlist_add_album():
         artist_name = request.args.get("artist_name")
         PLAYER.playlist_addalbum(album=album_name, artist=artist_name)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -449,7 +449,7 @@ def playlist_load_album():
         artist_name = request.args.get("artist_name")
         PLAYER.playlist_loadalbum(album=album_name, artist=artist_name)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -465,7 +465,7 @@ def play_next():
         global PLAYER
         PLAYER.next()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -481,7 +481,7 @@ def play_prev():
         global PLAYER
         PLAYER.prev()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -500,7 +500,7 @@ def playlist_info():
             temp["title"] = str(temp["title"]).encode("utf8")
         result["songs"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -536,7 +536,7 @@ def get_music_folder():
             data.append(info)
         result["data"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -556,7 +556,7 @@ def random_play():
         if "albums" in mode:
             PLAYER.request("randomplay albums ")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -573,7 +573,7 @@ def seek_to():
         second = request.args.get("second")
         PLAYER.seek_to(second)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -598,7 +598,7 @@ def repeat_mode():
             # 列表循环
             PLAYER.request("playlist repeat 2 ")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -637,7 +637,7 @@ def radio_local_list():
             temp_data = {}
         result["data"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -654,7 +654,7 @@ def radio_local_play():
         item_id = request.args.get("item_id")
         PLAYER.request("local playlist play item_id:" + item_id + " ")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -693,7 +693,7 @@ def radio_music_list():
             temp_data = {}
         result["data"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -710,6 +710,6 @@ def radio_music_play():
         item_id = request.args.get("item_id")
         PLAYER.request("music playlist play item_id:" + item_id + " ")
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)

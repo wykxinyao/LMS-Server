@@ -61,3 +61,9 @@ def get_wifi_list():
             ssid = uc.str_to_chinese(temp_ssid)
             results.append(ssid)
     return list(set(results))
+
+
+def check_wifi():
+    result = os.popen('wpa_cli -i wlan0 status').read()
+    temp = result.split("bssid=")[1].split("ssid=")[1].split("id=")[0]
+    return temp.strip()

@@ -44,7 +44,7 @@ def modify_squeezelite():
             content = base + "\n"
         ss.modify_squeezelite(content)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -62,7 +62,7 @@ def list_squeezelite():
             squeezelite_list.append(item)
         result["data"] = squeezelite_list
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -78,7 +78,23 @@ def config_wifi():
         password = request.args.get("password")
         sw.modify_wifi(ssid, password)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/check/wifi")
+def check_wifi():
+    """
+    检查WIFI是否成功
+    """
+    result = copy.copy(success_json)
+    try:
+        ssid = sw.check_wifi()
+        if ssid is not None:
+            result["ssid"] = ssid
+    except Exception, exp:
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -96,7 +112,7 @@ def list_wifi():
             data.append(item)
         result["data"] = data
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -115,7 +131,7 @@ def status_squeezelite():
         else:
             result["active"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -129,7 +145,7 @@ def start_squeezelite():
     try:
         ss.start_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -143,7 +159,7 @@ def stop_squeezelite():
     try:
         ss.stop_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -157,7 +173,7 @@ def restart_squeezelite():
     try:
         ss.restart_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -175,7 +191,7 @@ def boot_status_squeezelite():
         else:
             result["enable"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -189,7 +205,7 @@ def boot_start_squeezelite():
     try:
         ss.boot_start()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -203,7 +219,7 @@ def boot_stop_squeezelite():
     try:
         ss.boot_stop()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -221,7 +237,7 @@ def status_lms():
         else:
             result["active"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -235,7 +251,7 @@ def start_lms():
     try:
         sl.start_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -249,7 +265,7 @@ def stop_lms():
     try:
         sl.stop_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -263,7 +279,7 @@ def restart_lms():
     try:
         sl.restart_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -281,7 +297,7 @@ def boot_status_lms():
         else:
             result["enable"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -295,7 +311,7 @@ def boot_start_lms():
     try:
         sl.boot_start()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -309,7 +325,7 @@ def boot_stop_lms():
     try:
         sl.boot_stop()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -327,7 +343,7 @@ def status_roon():
         else:
             result["active"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -341,7 +357,7 @@ def start_roon():
     try:
         sr.start_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -355,7 +371,7 @@ def stop_roon():
     try:
         sr.stop_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -369,7 +385,7 @@ def restart_roon():
     try:
         sr.restart_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -387,7 +403,7 @@ def boot_status_roon():
         else:
             result["enable"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -401,7 +417,7 @@ def boot_start_roon():
     try:
         sr.boot_start()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -415,7 +431,7 @@ def boot_stop_roon():
     try:
         sr.boot_stop()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -433,7 +449,7 @@ def status_naa():
         else:
             result["active"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -447,7 +463,7 @@ def start_naa():
     try:
         sn.start_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -461,7 +477,7 @@ def stop_naa():
     try:
         sn.stop_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -475,7 +491,7 @@ def restart_naa():
     try:
         sn.restart_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -493,7 +509,7 @@ def boot_status_naa():
         else:
             result["enable"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -507,7 +523,7 @@ def boot_start_naa():
     try:
         sn.boot_start()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -521,7 +537,7 @@ def boot_stop_naa():
     try:
         sn.boot_stop()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -535,7 +551,7 @@ def halt():
     try:
         sh.halt()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -549,7 +565,7 @@ def reboot():
     try:
         sb.reboot()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -564,7 +580,7 @@ def umount():
         path = request.args.get("path")
         sm.umount(path)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -579,7 +595,7 @@ def mount_list():
         mount = sm.mount_list()
         result["data"] = mount
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -597,7 +613,7 @@ def network_mount():
         target_path = request.args.get("target_path")
         sm.mount_network(username, password, path, target_path)
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -611,7 +627,7 @@ def local_mount():
     try:
         sm.mount_local()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -629,7 +645,7 @@ def status_update():
         else:
             result["active"] = False
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -643,7 +659,7 @@ def start_update():
     try:
         su.start_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -657,7 +673,7 @@ def stop_update():
     try:
         su.stop_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
 
@@ -671,6 +687,6 @@ def restart_update():
     try:
         su.restart_service()
     except Exception, exp:
-        result = fail_json
+        result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
