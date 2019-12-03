@@ -38,7 +38,7 @@ def mount_local():
     本地挂载
     :return:None
     """
-    os.popen("mount -t auto /dev/sda1 /mnt/usb")
+    os.popen("mkdir /mnt/music;mount -t auto /dev/sda1 /mnt/music")
 
 
 def mount_list():
@@ -55,5 +55,5 @@ def mount_list():
     return path
 
 
-def umount(path):
-    os.popen("mount -v %s" % path)
+def umount():
+    os.popen("umount -v /dev/sda1")

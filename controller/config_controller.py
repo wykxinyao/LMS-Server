@@ -570,52 +570,52 @@ def reboot():
     return jsonify(result)
 
 
-@config_controller.route("/umount")
-def umount():
-    """
-    卸载
-    """
-    result = copy.copy(success_json)
-    try:
-        path = request.args.get("path")
-        sm.umount(path)
-    except Exception, exp:
-        result = copy.copy(fail_json)
-        result["error"] = exp.message
-    return jsonify(result)
-
-
-@config_controller.route("/mount/list")
-def mount_list():
-    """
-    已经挂载的列表
-    """
-    result = copy.copy(success_json)
-    try:
-        mount = sm.mount_list()
-        result["data"] = mount
-    except Exception, exp:
-        result = copy.copy(fail_json)
-        result["error"] = exp.message
-    return jsonify(result)
-
-
-@config_controller.route("/mount/network")
-def network_mount():
-    """
-    执行网络挂载
-    """
-    result = copy.copy(success_json)
-    try:
-        username = request.args.get("username")
-        password = request.args.get("password")
-        path = request.args.get("path")
-        target_path = request.args.get("target_path")
-        sm.mount_network(username, password, path, target_path)
-    except Exception, exp:
-        result = copy.copy(fail_json)
-        result["error"] = exp.message
-    return jsonify(result)
+# @config_controller.route("/umount")
+# def umount():
+#     """
+#     卸载
+#     """
+#     result = copy.copy(success_json)
+#     try:
+#         path = request.args.get("path")
+#         sm.umount(path)
+#     except Exception, exp:
+#         result = copy.copy(fail_json)
+#         result["error"] = exp.message
+#     return jsonify(result)
+#
+#
+# @config_controller.route("/mount/list")
+# def mount_list():
+#     """
+#     已经挂载的列表
+#     """
+#     result = copy.copy(success_json)
+#     try:
+#         mount = sm.mount_list()
+#         result["data"] = mount
+#     except Exception, exp:
+#         result = copy.copy(fail_json)
+#         result["error"] = exp.message
+#     return jsonify(result)
+#
+#
+# @config_controller.route("/mount/network")
+# def network_mount():
+#     """
+#     执行网络挂载
+#     """
+#     result = copy.copy(success_json)
+#     try:
+#         username = request.args.get("username")
+#         password = request.args.get("password")
+#         path = request.args.get("path")
+#         target_path = request.args.get("target_path")
+#         sm.mount_network(username, password, path, target_path)
+#     except Exception, exp:
+#         result = copy.copy(fail_json)
+#         result["error"] = exp.message
+#     return jsonify(result)
 
 
 @config_controller.route("/mount/local")
