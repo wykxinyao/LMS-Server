@@ -228,6 +228,18 @@ class Server(object):
         path = response.split("url:")[1].replace("%20", " ")
         return path
 
+    def get_song_detail(self, track_id):
+        """
+        根据歌曲ID获得歌曲详细
+        :param track_id:
+        :return:
+        """
+        response = str(self.request("songinfo 0 100 track_id:%s tags:u,I,r,T" % track_id))
+        data = {"samplesize": response.split(" samplesize:")[1].split(" bitrate:")[0]+"bits",
+                "bitrate": response.split(" bitrate:")[1].split(" VBR ")[0],
+                "samplerate": response.split(" samplerate:")[1]}
+        return data
+
     def find_songs(self, track_id, album_id, artist_id, genre_id):
         """
         find songs

@@ -281,6 +281,23 @@ def find_songs():
     return jsonify(result)
 
 
+@player_controller.route("/get/song/detail")
+def get_song_detail():
+    """
+    获取歌曲详情
+    """
+    result = copy.copy(success_json)
+    try:
+        global SERVER
+        track_id = request.args.get("track_id")
+        data = SERVER.get_song_detail(track_id=track_id)
+        result["data"] = data
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
 @player_controller.route("/play/song")
 def play_song():
     """

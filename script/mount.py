@@ -38,7 +38,7 @@ def mount_local():
     本地挂载
     :return:None
     """
-    os.popen("mkdir /mnt/music;mount -t auto /dev/sda1 /mnt/music")
+    os.popen("mkdir /mnt/music;mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music")
 
 
 def mount_list():

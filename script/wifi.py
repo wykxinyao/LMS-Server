@@ -67,3 +67,7 @@ def check_wifi():
     result = os.popen('wpa_cli -i wlan0 status').read()
     temp = result.split("bssid=")[1].split("ssid=")[1].split("id=")[0]
     return temp.strip()
+
+
+def disconnect():
+    os.popen("wpa_cli -i wlan0 disconnect")
