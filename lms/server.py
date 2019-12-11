@@ -235,8 +235,8 @@ class Server(object):
         :return:
         """
         response = str(self.request("songinfo 0 100 track_id:%s tags:u,I,r,T" % track_id))
-        data = {"samplesize": response.split(" samplesize:")[1].split(" bitrate:")[0]+"bits",
-                "bitrate": response.split(" bitrate:")[1].split(" VBR ")[0],
+        data = {"samplesize": response.split(" samplesize:")[1].split(" bitrate:")[0],
+                "bitrate": response.split(" bitrate:")[1].split(" VBR ")[0].split("kbps")[0],
                 "samplerate": response.split(" samplerate:")[1]}
         return data
 

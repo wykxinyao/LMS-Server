@@ -21,16 +21,15 @@
 import os
 
 
-def mount_network(username, password, path, target_path):
+def mount_network(username, password, path):
     """
     挂载
     :param username: 源系统用户名
     :param password: 源系统密码
     :param path: 源系统路径
-    :param target_path: 目标路径
     :return: None
     """
-    os.popen("mount -t cifs -o username=" + username + ",password=" + password + " " + path + " " + target_path)
+    os.popen("mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music")
 
 
 def mount_local():

@@ -19,8 +19,8 @@
 """
 
 import os
+import time
 import utils.charset_util as uc
-import utils.log_util as log
 
 
 def modify_wifi(ssid, password):
@@ -44,7 +44,10 @@ def modify_wifi(ssid, password):
         "}"
     )
     f.close()
-    log.log("Update New WIFI Config File Success!", log.INFO_LEVEL)
+    time.sleep(1)
+    os.popen("killall wpa_supplicant")
+    time.sleep(2)
+    os.popen("wpa_supplicant -Dnl80211 -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
 
 
 def get_wifi_list():
@@ -64,10 +67,22 @@ def get_wifi_list():
 
 
 def check_wifi():
+    """
+    查找当前的WIFI
+    :return:
+    """
     result = os.popen('wpa_cli -i wlan0 status').read()
     temp = result.split("bssid=")[1].split("ssid=")[1].split("id=")[0]
     return temp.strip()
 
 
 def disconnect():
-    os.popen("wpa_cli -i wlan0 disconnect")
+    """
+    断开连接（等待3秒）
+    :return:
+    """
+    os.popen("wpa_cli -i wlan0 disable_network 0")
+    time.sleep(1)
+    os.popen("wpa_cli -i wlan0 remove_network 0")
+    time.sleep(1)
+    os.popen("wpa_cli -i wlan0 save_config")
