@@ -24,6 +24,7 @@ import urllib
 import urllib2
 import os
 import time
+import script.reboot as sr
 
 
 def check_status():
@@ -136,6 +137,4 @@ def do_update(version):
     time.sleep(1)
     unzip_file()
     time.sleep(1)
-    stop_server_auto()
-    time.sleep(1)
-    start_server()
+    sr.reboot()
