@@ -26,3 +26,7 @@ AUTHOR = "Xu YiQing"
 SERVER_PORT = 8888
 # 绑定IP地址
 BIND_IP = "0.0.0.0"
+# 获得版本信息地址
+UPDATE_VERSION_URL = "http://39.106.125.199:8080/download/version.txt"
+# 下载文件开头
+UPDATE_FILE_PREFIX = "http://39.106.125.199:8080/download/OperaAudio-"

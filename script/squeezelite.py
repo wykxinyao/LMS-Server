@@ -19,7 +19,6 @@
 """
 
 import os
-import utils.log_util as log
 import utils.service_util as service
 
 
@@ -30,13 +29,10 @@ def check_status():
     """
     result = service.check_status("squeezelite")
     if result == "active":
-        log.log("Service Squeezelite is active", log.INFO_LEVEL)
         return True
     elif result == "inactive":
-        log.log("Service Squeezelite is inactive", log.INFO_LEVEL)
         return False
     else:
-        log.log("Service Status Check Error", log.ERROR_LEVEL)
         return False
 
 
@@ -46,7 +42,6 @@ def start_service():
     :return: None
     """
     service.start("squeezelite")
-    log.log("Start Service Squeezelite", log.INFO_LEVEL)
 
 
 def stop_service():
@@ -55,7 +50,6 @@ def stop_service():
     :return: None
     """
     service.stop("squeezelite")
-    log.log("Stop Service Squeezelite", log.INFO_LEVEL)
 
 
 def restart_service():
@@ -64,7 +58,6 @@ def restart_service():
     :return: None
     """
     service.restart("squeezelite")
-    log.log("Restart Service Squeezelite", log.INFO_LEVEL)
 
 
 def boot_status():
@@ -74,10 +67,8 @@ def boot_status():
     """
     result = service.boot_status("squeezelite")
     if result:
-        log.log("Service Squeezelite Start When Boot", log.INFO_LEVEL)
         return True
     else:
-        log.log("Service Squeezelite Not Start When Boot", log.INFO_LEVEL)
         return False
 
 
@@ -87,7 +78,6 @@ def boot_start():
     :return: None
     """
     service.boot_start("squeezelite")
-    log.log("Set Service Squeezelite Start When Boot", log.INFO_LEVEL)
 
 
 def boot_stop():
@@ -96,7 +86,6 @@ def boot_stop():
     :return:None
     """
     service.boot_stop("squeezelite")
-    log.log("Set Service Squeezelite Not Start When Boot", log.INFO_LEVEL)
 
 
 def modify_squeezelite(content):
@@ -107,7 +96,6 @@ def modify_squeezelite(content):
     """
     copy_success = os.popen('cp /etc/systemd/system/squeezelite.service /etc/systemd/system/squeezelite.service.back')
     if copy_success.read().strip() == "":
-        log.log("Backup <squeezelite.service> Success!", log.INFO_LEVEL)
         f = open('/etc/systemd/system/squeezelite.service', 'r+')
         f.truncate()
         f.write(
@@ -120,9 +108,8 @@ def modify_squeezelite(content):
             "WantedBy=multi-user.target\r\n\r\n"
         )
         f.close()
-        log.log("Write New <squeezelite.service> Success!", log.INFO_LEVEL)
     else:
-        log.log("Copy Operation Error!", log.ERROR_LEVEL)
+        pass
 
 
 def get_squeezelite_list():

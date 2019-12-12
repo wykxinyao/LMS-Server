@@ -19,7 +19,6 @@ try:
     sys.path.append(base_path + os.sep + 'config')
     sys.path.append(base_path + os.sep + 'controller')
     sys.path.append(base_path + os.sep + 'flask')
-    sys.path.append(base_path + os.sep + 'http')
     sys.path.append(base_path + os.sep + 'itsdangerous')
     sys.path.append(base_path + os.sep + 'jinja2')
     sys.path.append(base_path + os.sep + 'lms')
@@ -36,6 +35,7 @@ from flask import Flask
 
 from controller.config_controller import config_controller
 from controller.player_controller import player_controller
+from controller.update_controller import update_controller
 
 # handling coding problems
 reload(sys)
@@ -48,6 +48,8 @@ app = Flask(__name__)
 app.register_blueprint(config_controller, url_prefix="/config")
 # player controller
 app.register_blueprint(player_controller, url_prefix="/player")
+# update controller
+app.register_blueprint(update_controller, url_prefix="/update")
 
 # start the server
 if __name__ == '__main__':

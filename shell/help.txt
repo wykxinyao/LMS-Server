@@ -1,0 +1,12 @@
+如何将脚本配置到服务中：
+chmod +x server.sh
+sed -i "s/\r//" server.sh
+cp server.sh /etc/init.d：
+cd /etc/init.d/
+update-rc.d server.sh defaults 90
+service --status-all
+update-rc.d server.sh remove
+配置开机自动重新启动：
+/etc/rc.local
+service update.sh start
+service server.sh start

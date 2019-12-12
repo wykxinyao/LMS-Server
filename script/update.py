@@ -18,8 +18,12 @@
     limitations under the License.
 """
 
-import utils.log_util as log
+import config.config as config
 import utils.service_util as service
+import urllib
+import urllib2
+import os
+import time
 
 
 def check_status():
@@ -29,13 +33,10 @@ def check_status():
     """
     result = service.check_status("update.sh")
     if result == "active":
-        log.log("Service update.sh is active", log.INFO_LEVEL)
         return True
     elif result == "inactive":
-        log.log("Service update.sh is inactive", log.INFO_LEVEL)
         return False
     else:
-        log.log("Service Status Check Error", log.ERROR_LEVEL)
         return False
 
 
@@ -45,7 +46,6 @@ def start_service():
     :return: None
     """
     service.start("update.sh")
-    log.log("Start Service update.sh", log.INFO_LEVEL)
 
 
 def stop_service():
@@ -54,7 +54,6 @@ def stop_service():
     :return: None
     """
     service.stop("update.sh")
-    log.log("Stop Service update.sh", log.INFO_LEVEL)
 
 
 def restart_service():
@@ -63,4 +62,80 @@ def restart_service():
     :return: None
     """
     service.restart("update.sh")
-    log.log("Restart Service update.sh", log.INFO_LEVEL)
+
+
+def get_all_version_info():
+    """
+    获得版本信息
+    :return:
+    """
+    url = config.UPDATE_VERSION_URL
+    data = urllib2.urlopen(url).read()
+    result = str(data).split("\r\n")
+    return result
+
+
+def get_current_version_info():
+    """
+    获得当前版本信息
+    :return:
+    """
+    return config.VERSION
+
+
+def download_file(version):
+    """
+    下载指定版本
+    :param version:
+    :return:
+    """
+    url = str(config.UPDATE_FILE_PREFIX) + version + ".zip"
+    urllib.urlretrieve(url, "/root/OperaAudio.zip")
+
+
+def unzip_file():
+    """
+    解压文件
+    :return:
+    """
+    command = "nohup unzip -o -d /root /root/OperaAudio.zip && rm /root/OperaAudio.zip"
+    os.system(command)
+
+
+def stop_server_hand():
+    """
+    手动启动方式停止进程
+    :return:
+    """
+    os.popen("ps -ef | grep 'python start.py' | grep -v grep | awk '{print $2}' | xargs kill -9")
+
+
+def stop_server_auto():
+    """
+    自动启动方式停止进程
+    :return:
+    """
+    os.popen("ps -ef | grep 'python /root/OperaAudio/start.py' | grep -v grep | awk '{print $2}' | xargs kill -9")
+
+
+def start_server():
+    """
+    启动
+    :return:
+    """
+    os.popen("nohup python /root/OperaAudio/start.py>/root/OperaAudio/log 2>&1 &")
+
+
+def do_update(version):
+    """
+    执行更新
+    :param version:
+    :return:
+    """
+    download_file(version)
+    time.sleep(1)
+    unzip_file()
+    time.sleep(1)
+    stop_server_auto()
+    time.sleep(1)
+    start_server()

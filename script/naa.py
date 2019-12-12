@@ -18,7 +18,6 @@
     limitations under the License.
 """
 
-import utils.log_util as log
 import utils.service_util as service
 
 
@@ -29,13 +28,10 @@ def check_status():
     """
     result = service.check_status("networkaudiod")
     if result == "active":
-        log.log("Service networkaudiod is active", log.INFO_LEVEL)
         return True
     elif result == "inactive":
-        log.log("Service networkaudiod is inactive", log.INFO_LEVEL)
         return False
     else:
-        log.log("Service Status Check Error", log.ERROR_LEVEL)
         return False
 
 
@@ -45,7 +41,6 @@ def start_service():
     :return: None
     """
     service.start("networkaudiod")
-    log.log("Start Service networkaudiod", log.INFO_LEVEL)
 
 
 def stop_service():
@@ -54,7 +49,6 @@ def stop_service():
     :return: None
     """
     service.stop("networkaudiod")
-    log.log("Stop Service networkaudiod", log.INFO_LEVEL)
 
 
 def restart_service():
@@ -63,7 +57,6 @@ def restart_service():
     :return: None
     """
     service.restart("networkaudiod")
-    log.log("Restart Service networkaudiod", log.INFO_LEVEL)
 
 
 def boot_status():
@@ -73,10 +66,8 @@ def boot_status():
     """
     result = service.boot_status("networkaudiod")
     if result:
-        log.log("Service networkaudiod Start When Boot", log.INFO_LEVEL)
         return True
     else:
-        log.log("Service networkaudiod Not Start When Boot", log.INFO_LEVEL)
         return False
 
 
@@ -86,7 +77,6 @@ def boot_start():
     :return: None
     """
     service.boot_start("networkaudiod")
-    log.log("Set Service networkaudiod Start When Boot", log.INFO_LEVEL)
 
 
 def boot_stop():
@@ -95,4 +85,3 @@ def boot_stop():
     :return:None
     """
     service.boot_stop("networkaudiod")
-    log.log("Set Service networkaudiod Not Start When Boot", log.INFO_LEVEL)
