@@ -19,6 +19,32 @@
 """
 
 import os
+import script.reboot as sr
+
+FILE_PATH = "/etc/rc.local"
+# FILE_PATH = "D:\\test.txt"
+
+PREFIX_TEXT = ("#!/bin/sh -e\n" +
+               "#\n" +
+               "# rc.local\n" +
+               "#\n" +
+               "# This script is executed at the end of each multiuser runlevel.\n" +
+               "# Make sure that the script will \"exit 0\" on success or any other\n" +
+               "# value on error.\n" +
+               "#\n" +
+               "# In order to enable or disable this script just change the execution\n" +
+               "# bits.\n" +
+               "#\n" +
+               "# By default this script does nothing\n" +
+               "\n")
+
+SUFFIX_TEXT = ("# Print the IP address\n" +
+               "_IP=$(hostname -I) || true\n" +
+               "if [ \"$_IP\" ]; then\n" +
+               "  printf \"My IP address is %s\\n\" \"$_IP\"\n" +
+               "fi\n" +
+               "\n" +
+               "exit 0\n")
 
 
 def mount_network(username, password, path):
@@ -29,7 +55,15 @@ def mount_network(username, password, path):
     :param path: 源系统路径
     :return: None
     """
-    os.popen("mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music")
+    f = open(FILE_PATH, 'r+')
+    f.truncate()
+    f.write(
+        PREFIX_TEXT +
+        "mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music\n"
+        + SUFFIX_TEXT
+    )
+    f.close()
+    sr.reboot()
 
 
 def mount_local():
@@ -37,7 +71,15 @@ def mount_local():
     本地挂载
     :return:None
     """
-    os.popen("mkdir /mnt/music;mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music")
+    f = open(FILE_PATH, 'r+')
+    f.truncate()
+    f.write(
+        PREFIX_TEXT +
+        "mkdir /mnt/music;mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music\n"
+        + SUFFIX_TEXT
+    )
+    f.close()
+    sr.reboot()
 
 
 def mount_list():
@@ -55,4 +97,16 @@ def mount_list():
 
 
 def umount():
-    os.popen("umount -v /dev/sda1")
+    """
+    卸载
+    :param:
+    :return:
+    """
+    f = open(FILE_PATH, 'r+')
+    f.truncate()
+    f.write(
+        PREFIX_TEXT + SUFFIX_TEXT
+    )
+    f.close()
+    sr.reboot()
+

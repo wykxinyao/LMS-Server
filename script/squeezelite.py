@@ -121,6 +121,6 @@ def get_squeezelite_list():
     temp = result.split('\n')[2:]
     results = []
     for item in temp:
-        if "hw:CARD" in item:
+        if item.strip().startswith("hw:CARD"):
             results.append(item)
     return results

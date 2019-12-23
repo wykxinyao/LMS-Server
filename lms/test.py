@@ -56,3 +56,15 @@ print player.request("presets items 0 999 item_id")
 print player.request("music items 0 999 item_id:3857457a.0 ")
 player.request("local playlist play item_id:6684f6cf.1.0.0 ")
 print player.request("music items 0 999 ")
+
+########################################
+#playlists 0 99999
+#id:125 playlist:demo count:1
+#
+#playlists new name:Hello
+#playlist_id:214
+#
+#playlists delete playlist_id:22
+#null
+#
+#playlists edit cmd:add playlist_id:125 title:%E9%BB%91%E8%89%B2%E5%B9%BD%E9%BB%98 url:file:///mnt/music/1111/11111.flac

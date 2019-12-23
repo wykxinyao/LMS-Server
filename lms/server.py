@@ -212,7 +212,7 @@ class Server(object):
         else:
             return ""
 
-    def rescanprogress(self):
+    def rescan_progress(self):
         """
         Return current rescan progress
         """

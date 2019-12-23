@@ -591,7 +591,6 @@ def umount():
     """
     result = copy.copy(success_json)
     try:
-        path = request.args.get("path")
         sm.umount()
     except Exception, exp:
         result = copy.copy(fail_json)
