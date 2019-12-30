@@ -59,7 +59,7 @@ def mount_network(username, password, path):
     f.truncate()
     f.write(
         PREFIX_TEXT +
-        "mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music\n"
+        "/bin/mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music\n"
         + SUFFIX_TEXT
     )
     f.close()
@@ -75,7 +75,7 @@ def mount_local():
     f.truncate()
     f.write(
         PREFIX_TEXT +
-        "mkdir /mnt/music;mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music\n"
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music\n"
         + SUFFIX_TEXT
     )
     f.close()
