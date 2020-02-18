@@ -29,10 +29,10 @@ def check_status(service):
     """
     command = "service " + service + " status"
     check = os.popen(command)
-    flag = check.read().split('\n')[2].strip()
-    if flag == "Active: active (running)" or "Active: active (running)" in flag:
+    flag = check.read()
+    if "Active: active (running)" in flag:
         return "active"
-    elif flag == "Active: inactive (dead)" or "Active: inactive (dead)" in flag:
+    elif "Active: inactive (dead)" in flag:
         return "inactive"
     else:
         print "error"
