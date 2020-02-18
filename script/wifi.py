@@ -47,7 +47,8 @@ def modify_wifi(ssid, password):
     time.sleep(1)
     os.popen("killall wpa_supplicant")
     time.sleep(2)
-    os.popen("wpa_supplicant -Dnl80211 -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
+    # os.popen("wpa_supplicant -Dnl80211 -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
+    os.popen("wpa_supplicant -Dnl80211 -i wlan1 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
 
 
 def get_wifi_list():
@@ -55,15 +56,23 @@ def get_wifi_list():
     查询局域网内可用的WIFI
     :return: WIFI的SSID列表
     """
-    result = os.popen('iw dev wlan0 scan | grep SSID').read()
-    temp = result.split('\n')[:-1]
+    # result = os.popen('iw dev wlan0 scan | grep SSID').read()
+    result = os.popen('iw dev wlan1 scan | grep SSID').read()
+    temp = result.split('\n')
     results = []
     for item in temp:
         if "\\x00" not in item:
+            if item.strip() == "":
+                continue
+            if item.strip() == "SSID:":
+                continue
             temp_ssid = item.strip().split("SSID: ")[1]
-            ssid = uc.str_to_chinese(temp_ssid)
+            if temp_ssid.startswith("\\x"):
+                ssid = uc.str_to_chinese(temp_ssid)
+            else:
+                ssid = temp_ssid
             results.append(ssid)
-    return list(set(results))
+    return results
 
 
 def check_wifi():
@@ -71,7 +80,8 @@ def check_wifi():
     查找当前的WIFI
     :return:
     """
-    result = os.popen('wpa_cli -i wlan0 status').read()
+    # result = os.popen('wpa_cli -i wlan0 status').read()
+    result = os.popen('wpa_cli -i wlan1 status').read()
     temp = result.split("bssid=")[1].split("ssid=")[1].split("id=")[0]
     return temp.strip()
 
@@ -81,8 +91,11 @@ def disconnect():
     断开连接（等待3秒）
     :return:
     """
-    os.popen("wpa_cli -i wlan0 disable_network 0")
+    # os.popen("wpa_cli -i wlan0 disable_network 0")
+    os.popen("wpa_cli -i wlan1 disable_network 0")
     time.sleep(1)
-    os.popen("wpa_cli -i wlan0 remove_network 0")
+    # os.popen("wpa_cli -i wlan0 remove_network 0")
+    os.popen("wpa_cli -i wlan1 remove_network 0")
     time.sleep(1)
-    os.popen("wpa_cli -i wlan0 save_config")
+    # os.popen("wpa_cli -i wlan0 save_config")
+    os.popen("wpa_cli -i wlan1 save_config")
