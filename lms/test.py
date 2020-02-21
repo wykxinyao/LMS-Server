@@ -20,6 +20,7 @@
 
 import sys
 import os
+import re
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -41,30 +42,5 @@ except Exception as e:
 from lms.server import Server
 from lms.player import Player
 
-server = Server(hostname="192.168.0.101", port=9090)
+server = Server(hostname="192.168.1.105", port=9090)
 server.connect()
-track_id=186
-response = str(server.request("songinfo 0 100 track_id:%s tags:u,I,r,T" % track_id))
-data = {"samplesize": response.split(" samplesize:")[1].split(" bitrate:")[0],
-        "bitrate": response.split(" bitrate:")[1].split(" VBR ")[0].split("kbps")[0],
-        "samplerate": response.split(" samplerate:")[1]}
-print data
-server.rescan()
-player = server.get_player("Opera")
-print player.plugins()
-print player.request("presets items 0 999 item_id")
-print player.request("music items 0 999 item_id:3857457a.0 ")
-player.request("local playlist play item_id:6684f6cf.1.0.0 ")
-print player.request("music items 0 999 ")
-
-########################################
-#playlists 0 99999
-#id:125 playlist:demo count:1
-#
-#playlists new name:Hello
-#playlist_id:214
-#
-#playlists delete playlist_id:22
-#null
-#
-#playlists edit cmd:add playlist_id:125 title:%E9%BB%91%E8%89%B2%E5%B9%BD%E9%BB%98 url:file:///mnt/music/1111/11111.flac

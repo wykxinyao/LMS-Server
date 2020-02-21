@@ -183,6 +183,23 @@ def rescan():
     return jsonify(result)
 
 
+@player_controller.route("/rescanprogress")
+def rescanprogress():
+    """
+    重新扫描
+    """
+    result = copy.copy(success_json)
+    try:
+        global SERVER
+        temp = SERVER.rescan_progress()
+        data = temp[1][0]['rescan']
+        result['data'] = data
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
 @player_controller.route("/play")
 def play():
     """
@@ -690,7 +707,7 @@ def radio_music_list():
         if item_id is None:
             response = str(PLAYER.request("music items 0 999 ")).split(" count:")[0]
         else:
-            response = str(PLAYER.request("music items 0 999 item_id:"+item_id+" ")).split(" count:")[0]
+            response = str(PLAYER.request("music items 0 999 item_id:" + item_id + " ")).split(" count:")[0]
         result["title"] = response.split("title:")[1].split(" id:")[0]
         temp = response.split("id:")[1:]
         temp_data = {}

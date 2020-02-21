@@ -3,6 +3,7 @@
 # python version:2.7
 
 import copy
+import re
 
 from flask import Blueprint
 from flask import jsonify
@@ -37,9 +38,9 @@ def modify_squeezelite():
         suffix = "  -n 'Opera' -C 3 "
         base = prefix + output + suffix
         if dsd == "DoP":
-            content = base + "-D\n"
+            content = base + "-D -p 99 -a 80:4:32:1\n"
         elif dsd == "Native":
-            content = base + "-D :u32be -p 1\n"
+            content = base + "-D :u32be -p 99 -a 80:4:32:1\n"
         else:
             content = base + "\n"
         ss.modify_squeezelite(content)
@@ -57,10 +58,10 @@ def list_squeezelite():
     result = copy.copy(success_json)
     try:
         sq_list = ss.get_squeezelite_list()
-        squeezelite_list = []
+        squeezelites = {}
         for item in sq_list:
-            squeezelite_list.append(item)
-        result["data"] = squeezelite_list
+            squeezelites[re.sub(r'[{}]+'.format(','), '', item.split(" - ")[1].strip())] = item.strip()
+        result["data"] = squeezelites
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message

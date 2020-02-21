@@ -56,10 +56,13 @@ def mount_network(username, password, path):
     :return: None
     """
     f = open(FILE_PATH, 'r+')
+    old = f.read().split("# Print the IP address")[0]
     f.truncate()
     f.write(
-        PREFIX_TEXT +
-        "/bin/mount -t cifs -o username=" + username + ",password=" + password + " //" + path + " /mnt/music\n"
+        old +
+        "/bin/mkdir /mnt/music/network;" +
+        "/bin/mount -t cifs //" + path + " /mnt/music/network"
+        + " -o username=\"" + username + "\",password=\"" + password + "\"\n"
         + SUFFIX_TEXT
     )
     f.close()
@@ -75,7 +78,14 @@ def mount_local():
     f.truncate()
     f.write(
         PREFIX_TEXT +
-        "/bin/mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music\n"
+        "/bin/mkdir /mnt/music/sda1;/bin/mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music/sda1;" +
+        "/bin/mkdir /mnt/music/sda2;/bin/mount -o iocharset=utf8 -t auto /dev/sda2 /mnt/music/sda2;" +
+        "/bin/mkdir /mnt/music/sdb1;/bin/mount -o iocharset=utf8 -t auto /dev/sdb1 /mnt/music/sdb1;" +
+        "/bin/mkdir /mnt/music/sdb2;/bin/mount -o iocharset=utf8 -t auto /dev/sdb2 /mnt/music/sdb2;" +
+        "/bin/mkdir /mnt/music/sdc1;/bin/mount -o iocharset=utf8 -t auto /dev/sdc1 /mnt/music/sdc1;" +
+        "/bin/mkdir /mnt/music/sdc2;/bin/mount -o iocharset=utf8 -t auto /dev/sdc2 /mnt/music/sdc2;" +
+        "/bin/mkdir /mnt/music/sdd1;/bin/mount -o iocharset=utf8 -t auto /dev/sdd1 /mnt/music/sdd1;" +
+        "/bin/mkdir /mnt/music/sdd2;/bin/mount -o iocharset=utf8 -t auto /dev/sdd2 /mnt/music/sdd2\n"
         + SUFFIX_TEXT
     )
     f.close()
@@ -109,4 +119,3 @@ def umount():
     )
     f.close()
     sr.reboot()
-
