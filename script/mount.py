@@ -58,10 +58,12 @@ def mount_network(username, password, path):
     os.popen("mkdir /mnt/music/network")
     f = open("/etc/fstab", 'r+')
     data = f.read()
+    f.seek(0, 0)
+    f.truncate()
     prefix = data.split("# NETWORK")[0]
     suffix = data.split("# TMPFS")[1]
     start = prefix + "# NETWORK\n" + "#----------------------------------------------------------------\n"
-    new = start + "//" + path.strip() + " /mnt/test cifs username=" + username.strip() + ",password=" + password.strip() + ",iocharset=utf8,uid=dietpi,gid=dietpi,file_mode=0770,dir_mode=0770,vers=3.1.1,_netdev,nofail 0 0\n"
+    new = start + "//" + path.strip() + " /mnt/music/network cifs username=" + username.strip() + ",password=" + password.strip() + ",iocharset=utf8,uid=dietpi,gid=dietpi,file_mode=0770,dir_mode=0770,vers=3.1.1,_netdev,nofail 0 0\n\n"
     result = new + "#----------------------------------------------------------------\n" + "# TMPFS" + suffix
     f.write(result)
     f.close()
