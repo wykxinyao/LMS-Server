@@ -55,16 +55,15 @@ def mount_network(username, password, path):
     :param path: 源系统路径
     :return: None
     """
-    f = open(FILE_PATH, 'r+')
-    old = f.read().split("# Print the IP address")[0]
-    f.truncate()
-    f.write(
-        old +
-        "/bin/mkdir /mnt/music/network;" +
-        "/bin/mount -t cifs //" + path + " /mnt/music/network"
-        + " -o username=\"" + username + "\",password=\"" + password + "\"\n"
-        + SUFFIX_TEXT
-    )
+    os.popen("mkdir /mnt/music/network")
+    f = open("/etc/fstab", 'r+')
+    data = f.read()
+    prefix = data.split("# NETWORK")[0]
+    suffix = data.split("# TMPFS")[1]
+    start = prefix + "# NETWORK\n" + "#----------------------------------------------------------------\n"
+    new = start + "//" + path.strip() + " /mnt/test cifs username=" + username.strip() + ",password=" + password.strip() + ",iocharset=utf8,uid=dietpi,gid=dietpi,file_mode=0770,dir_mode=0770,vers=3.1.1,_netdev,nofail 0 0\n"
+    result = new + "#----------------------------------------------------------------\n" + "# TMPFS" + suffix
+    f.write(result)
     f.close()
     sr.reboot()
 
@@ -97,12 +96,26 @@ def mount_list():
     获取当前挂载列表
     :return: list
     """
+    path = []
     temp = os.popen("mount")
     mount = str(temp.read()).split("\n")
-    path = []
     for item in mount:
         if "/dev/sda1" in item:
             path.append("/dev/sda1 -> %s" % item.split("/dev/sda1 on ")[1].split(" type")[0])
+        if "/dev/sda2" in item:
+            path.append("/dev/sda2 -> %s" % item.split("/dev/sda2 on ")[1].split(" type")[0])
+        if "/dev/sdb1" in item:
+            path.append("/dev/sdb1 -> %s" % item.split("/dev/sdb1 on ")[1].split(" type")[0])
+        if "/dev/sdb2" in item:
+            path.append("/dev/sdb2 -> %s" % item.split("/dev/sdb2 on ")[1].split(" type")[0])
+        if "/dev/sdc1" in item:
+            path.append("/dev/sdc1 -> %s" % item.split("/dev/sdc1 on ")[1].split(" type")[0])
+        if "/dev/sdc2" in item:
+            path.append("/dev/sdc2 -> %s" % item.split("/dev/sdc2 on ")[1].split(" type")[0])
+        if "/dev/sdd1" in item:
+            path.append("/dev/sdd1 -> %s" % item.split("/dev/sdd1 on ")[1].split(" type")[0])
+        if "/dev/sdd2" in item:
+            path.append("/dev/sdd2 -> %s" % item.split("/dev/sdd2 on ")[1].split(" type")[0])
     return path
 
 
