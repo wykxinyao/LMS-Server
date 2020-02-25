@@ -127,10 +127,23 @@ def umount():
     :param:
     :return:
     """
-    f = open(FILE_PATH, 'r+')
-    f.truncate()
-    f.write(
+    f1 = open(FILE_PATH, 'r+')
+    f1.truncate()
+    f1.write(
         PREFIX_TEXT + SUFFIX_TEXT
     )
-    f.close()
+    f1.close()
+
+    f2 = open("/etc/fstab", 'r+')
+    data = f2.read()
+    f2.seek(0, 0)
+    f2.truncate()
+    prefix = data.split("# NETWORK")[0]
+    suffix = data.split("# TMPFS")[1]
+    start = prefix + "# NETWORK\n" + "#----------------------------------------------------------------\n"
+    new = start + "\n\n"
+    result = new + "#----------------------------------------------------------------\n" + "# TMPFS" + suffix
+    f2.write(result)
+    f2.close()
+
     sr.reboot()
