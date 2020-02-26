@@ -129,8 +129,7 @@ class Server(object):
                             item[key] = value
                     output.append(item)
             return count, output, False
-        except Exception as e:
-            print e
+        except Exception:
             return 0, [], True
 
     def get_players(self, update=True):
@@ -224,8 +223,8 @@ class Server(object):
         :param track_id:
         :return:
         """
-        response = self.request("songinfo 0 100 track_id:%s tags:u" % track_id)
-        path = response.split("url:")[1].replace("%20", " ")
+        response = self.request_with_results("songinfo 0 100 track_id:%s tags:u" % track_id)[1][0]['url']
+        path = response.replace("%20", " ")
         return path
 
     def get_song_detail(self, track_id):
@@ -234,11 +233,7 @@ class Server(object):
         :param track_id:
         :return:
         """
-        response = str(self.request("songinfo 0 100 track_id:%s tags:u,I,r,T" % track_id))
-        data = {"samplesize": response.split(" samplesize:")[1].split(" bitrate:")[0],
-                "bitrate": response.split(" bitrate:")[1].split(" VBR ")[0].split("kbps")[0],
-                "samplerate": response.split(" samplerate:")[1]}
-        return data
+        return self.request_with_results("songinfo 0 100 track_id:%s tags:u,I,r,T" % track_id)[1][1]
 
     def find_songs(self, track_id, album_id, artist_id, genre_id):
         """
@@ -254,49 +249,21 @@ class Server(object):
         if genre_id is not None:
             base_command += " genre_id:%s" % genre_id
         print base_command
-        response = str(self.request(base_command))
-        temp = response.split("id:")[1:]
+        response = str(self.request_with_results(base_command))
+        temp = response[1]
         data = []
-        for info in temp:
-            song = {}
-            string = info.decode("utf-8")
-            song_id = string.split(" title:")[0]
-            title = string.split(" genre:")[0].split("title:")[1]
-            genre = string.split(" artist:")[0].split("genre:")[1]
-            artist = string.split(" album:")[0].split("artist:")[1]
-            album = string.split(" duration:")[0].split("album:")[1]
-            duration = string.split("duration:")[1].strip()
-            song["song_id"] = song_id
-            song["title"] = title
-            song["genre"] = genre
-            song["artist"] = artist
-            song["album"] = album
-            song["duration"] = duration
-            data.append(song)
+        for item in temp:
+            data.append(item)
         return data
 
     def get_all_songs(self):
         """
         Return all songs
         """
-        response = str(self.request("songs 0 9999999"))
-        temp = response.split("id:")[1:]
-        for info in temp:
-            song = {}
-            string = info.decode("utf-8")
-            song_id = string.split(" title:")[0]
-            title = string.split(" genre:")[0].split("title:")[1]
-            genre = string.split(" artist:")[0].split("genre:")[1]
-            artist = string.split(" album:")[0].split("artist:")[1]
-            album = string.split(" duration:")[0].split("album:")[1]
-            duration = string.split("duration:")[1].strip()
-            song["song_id"] = song_id
-            song["title"] = title
-            song["genre"] = genre
-            song["artist"] = artist
-            song["album"] = album
-            song["duration"] = duration
-            self.all_songs.append(song)
+        response = self.request_with_results("songs 0 9999999")
+        temp = response[1]
+        for item in temp:
+            self.all_songs.append(item)
         return self.all_songs
 
     def __encode(self, text):

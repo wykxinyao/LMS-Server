@@ -62,17 +62,8 @@ def list_all():
     result = copy.copy(success_json)
     try:
         global SERVER
-        data = []
-        page = int(request.args.get("page"))
-        count = int(str(SERVER.request("info total songs ?").strip()))
         songs = SERVER.get_all_songs()
-        index = 0
-        for _ in songs:
-            if index < count:
-                if page * 50 <= index < (page + 1) * 50:
-                    data.append(songs[index])
-            index += 1
-        result["songs"] = data
+        result["songs"] = songs
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -88,7 +79,7 @@ def search_songs():
     try:
         global SERVER
         songs = urllib.quote(str(request.args.get("songs")))
-        result["songs"] = SERVER.search(songs, mode="songs")
+        result["songs"] = SERVER.search(songs, mode="songs")[1]
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -105,10 +96,10 @@ def search_albums():
         global SERVER
         albums = request.args.get("albums")
         if albums is None or albums is "":
-            result["albums"] = SERVER.get_all_albums()
+            result["albums"] = SERVER.get_all_albums()[1]
         else:
             albums = urllib.quote(str(request.args.get("albums")))
-            result["albums"] = SERVER.search(albums, mode="albums")
+            result["albums"] = SERVER.search(albums, mode="albums")[1]
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -124,7 +115,7 @@ def search_artist():
     try:
         global SERVER
         artists = urllib.quote(str(request.args.get("artists")))
-        result["artists"] = SERVER.search(artists, mode="artists")
+        result["artists"] = SERVER.search(artists, mode="artists")[1]
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -550,25 +541,10 @@ def get_music_folder():
         global SERVER
         folder_id = request.args.get("folder_id")
         if folder_id is None:
-            response = SERVER.request("musicfolder 0 999999 ")
+            response = SERVER.request_with_results("musicfolder 0 999999 ")[1]
         else:
-            response = SERVER.request("musicfolder 0 999999 folder_id:%s " % folder_id)
-        data = []
-        temp = response.split("id:")[1:]
-        for item in temp:
-            if "count:" in item:
-                item = item.split(" count:")[0]
-            info = {}
-            folder_type = str(item.split("type:")[1]).strip()
-            info["type"] = folder_type
-            if "folder" in folder_type:
-                info["folder_id"] = item.split(" filename")[0].strip()
-            elif "track" in folder_type:
-                info["track_id"] = item.split(" filename")[0].strip()
-            filename = item.split("filename:")[1].split(" type")[0]
-            info["filename"] = filename
-            data.append(info)
-        result["data"] = data
+            response = SERVER.request_with_results("musicfolder 0 999999 folder_id:%s " % folder_id)[1]
+        result["data"] = response
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message

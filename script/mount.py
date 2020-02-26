@@ -75,18 +75,28 @@ def mount_local():
     本地挂载
     :return:None
     """
+    os.popen(
+        "/bin/mkdir /mnt/music/sda1 ; " +
+        "/bin/mkdir /mnt/music/sda2 ; " +
+        "/bin/mkdir /mnt/music/sdb1 ; " +
+        "/bin/mkdir /mnt/music/sdb2 ; " +
+        "/bin/mkdir /mnt/music/sdc1 ; " +
+        "/bin/mkdir /mnt/music/sdc2 ; " +
+        "/bin/mkdir /mnt/music/sdd1 ; " +
+        "/bin/mkdir /mnt/music/sdd2")
     f = open(FILE_PATH, 'r+')
     f.truncate()
     f.write(
         PREFIX_TEXT +
-        "/bin/mkdir /mnt/music/sda1;/bin/mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music/sda1;" +
-        "/bin/mkdir /mnt/music/sda2;/bin/mount -o iocharset=utf8 -t auto /dev/sda2 /mnt/music/sda2;" +
-        "/bin/mkdir /mnt/music/sdb1;/bin/mount -o iocharset=utf8 -t auto /dev/sdb1 /mnt/music/sdb1;" +
-        "/bin/mkdir /mnt/music/sdb2;/bin/mount -o iocharset=utf8 -t auto /dev/sdb2 /mnt/music/sdb2;" +
-        "/bin/mkdir /mnt/music/sdc1;/bin/mount -o iocharset=utf8 -t auto /dev/sdc1 /mnt/music/sdc1;" +
-        "/bin/mkdir /mnt/music/sdc2;/bin/mount -o iocharset=utf8 -t auto /dev/sdc2 /mnt/music/sdc2;" +
-        "/bin/mkdir /mnt/music/sdd1;/bin/mount -o iocharset=utf8 -t auto /dev/sdd1 /mnt/music/sdd1;" +
-        "/bin/mkdir /mnt/music/sdd2;/bin/mount -o iocharset=utf8 -t auto /dev/sdd2 /mnt/music/sdd2\n"
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sda1 /mnt/music/sda1\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sda2 /mnt/music/sda2\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdb1 /mnt/music/sdb1\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdb2 /mnt/music/sdb2\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdc1 /mnt/music/sdc1\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdc2 /mnt/music/sdc2\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdd1 /mnt/music/sdd1\n" +
+        "/bin/mount -o iocharset=utf8 -t auto /dev/sdd2 /mnt/music/sdd2\n" +
+        "sleep 30\n\n"
         + SUFFIX_TEXT
     )
     f.close()
