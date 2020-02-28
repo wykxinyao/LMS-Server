@@ -99,3 +99,5 @@ def disconnect():
     time.sleep(1)
     # os.popen("wpa_cli -i wlan0 save_config")
     os.popen("wpa_cli -i wlan1 save_config")
+    time.sleep(1)
+    os.popen("reboot")

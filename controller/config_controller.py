@@ -331,7 +331,7 @@ def boot_start_lms():
     return jsonify(result)
 
 
-@config_controller.route("/boot_stop/squeezelite")
+@config_controller.route("/boot_stop/lms")
 def boot_stop_lms():
     """
     设置LMS服务开机不启动
