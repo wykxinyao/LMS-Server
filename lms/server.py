@@ -188,6 +188,9 @@ class Server(object):
     def get_all_albums(self):
         return self.request_with_results("albums 0 9999999")
 
+    def get_all_artists(self):
+        return self.request_with_results("artists 0 9999999")
+
     def rescan(self, mode='fast'):
         """
         Rescan library

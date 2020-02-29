@@ -98,8 +98,8 @@ def search_albums():
         if albums is None or albums is "":
             result["albums"] = SERVER.get_all_albums()[1]
         else:
-            albums = urllib.quote(str(request.args.get("albums")))
-            result["albums"] = SERVER.search(albums, mode="albums")[1]
+            albums_ = urllib.quote(albums)
+            result["albums"] = SERVER.search(albums_, mode="albums")[1]
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -114,8 +114,12 @@ def search_artist():
     result = copy.copy(success_json)
     try:
         global SERVER
-        artists = urllib.quote(str(request.args.get("artists")))
-        result["artists"] = SERVER.search(artists, mode="artists")[1]
+        artists = request.args.get("artists")
+        if artists is None or artists is "":
+            result["artists"] = SERVER.get_all_artists()[1]
+        else:
+            artists_ = urllib.quote(artists)
+            result["artists"] = SERVER.search(artists_, mode="artists")[1]
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -419,7 +423,6 @@ def playlist_delete_song():
         global PLAYER
         global SERVER
         track_id = request.args.get("track_id")
-        print SERVER.get_path(track_id)
         PLAYER.playlist_delete(SERVER.get_path(track_id))
     except Exception, exp:
         result = copy.copy(fail_json)
