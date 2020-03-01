@@ -11,6 +11,9 @@ from flask import jsonify
 
 from lms.server import Server
 
+from db import dbutil
+from db import core
+
 player_controller = Blueprint('play_controller', __name__)
 
 success_json = {'success': True, 'status': 200}
@@ -54,22 +57,6 @@ def disconnect():
     return jsonify(result)
 
 
-@player_controller.route("/list/all")
-def list_all():
-    """
-    分页查询所有歌曲
-    """
-    result = copy.copy(success_json)
-    try:
-        global SERVER
-        songs = SERVER.get_all_songs()
-        result["songs"] = songs
-    except Exception, exp:
-        result = copy.copy(fail_json)
-        result["error"] = exp.message
-    return jsonify(result)
-
-
 @player_controller.route("/list/songs")
 def search_songs():
     """
@@ -77,9 +64,18 @@ def search_songs():
     """
     result = copy.copy(success_json)
     try:
-        global SERVER
-        songs = urllib.quote(str(request.args.get("songs")))
-        result["songs"] = SERVER.search(songs, mode="songs")[1]
+        db = core.DB()
+        connection = db.get_connction()
+
+        name = request.args.get("name")
+        page_size = request.args.get("page_size")
+        page = request.args.get("page")
+
+        if name is None or name is "":
+            result["tracks"] = dbutil.select_track_by_page(connection, page_size, page)
+        else:
+            name_ = urllib.quote(name)
+            result["tracks"] = dbutil.select_track_by_name(connection, name_, page_size, page)
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -93,16 +89,21 @@ def search_albums():
     """
     result = copy.copy(success_json)
     try:
-        global SERVER
-        albums = request.args.get("albums")
-        if albums is None or albums is "":
-            result["albums"] = SERVER.get_all_albums()[1]
+        db = core.DB()
+        connection = db.get_connction()
+
+        name = request.args.get("name")
+        page_size = request.args.get("page_size")
+        page = request.args.get("page")
+
+        if name is None or name is "":
+            result["albums"] = dbutil.select_album_by_page(connection, page_size, page)
         else:
-            albums_ = urllib.quote(albums)
-            result["albums"] = SERVER.search(albums_, mode="albums")[1]
+            name_ = urllib.quote(name)
+            result["albums"] = dbutil.select_album_by_name(connection, name_, page_size, page)
     except Exception, exp:
         result = copy.copy(fail_json)
-        result["error"] = exp.message
+        result["albums"] = exp.message
     return jsonify(result)
 
 
@@ -113,16 +114,21 @@ def search_artist():
     """
     result = copy.copy(success_json)
     try:
-        global SERVER
-        artists = request.args.get("artists")
-        if artists is None or artists is "":
-            result["artists"] = SERVER.get_all_artists()[1]
+        db = core.DB()
+        connection = db.get_connction()
+
+        name = request.args.get("name")
+        page_size = request.args.get("page_size")
+        page = request.args.get("page")
+
+        if name is None or name is "":
+            result["artists"] = dbutil.select_artist_by_page(connection, page_size, page)
         else:
-            artists_ = urllib.quote(artists)
-            result["artists"] = SERVER.search(artists_, mode="artists")[1]
+            name_ = urllib.quote(name)
+            result["artists"] = dbutil.select_artist_by_name(connection, name_, page_size, page)
     except Exception, exp:
         result = copy.copy(fail_json)
-        result["error"] = exp.message
+        result["artists"] = exp.message
     return jsonify(result)
 
 
@@ -280,30 +286,26 @@ def find_songs():
     """
     result = copy.copy(success_json)
     try:
-        global SERVER
-        track_id = request.args.get("track_id")
-        album_id = request.args.get("album_id")
-        artist_id = request.args.get("artist_id")
-        genre_id = request.args.get("genre_id")
-        songs = SERVER.find_songs(track_id=track_id, album_id=album_id, artist_id=artist_id, genre_id=genre_id)
-        result["songs"] = songs
-    except Exception, exp:
-        result = copy.copy(fail_json)
-        result["error"] = exp.message
-    return jsonify(result)
+        db = core.DB()
+        connection = db.get_connction()
 
-
-@player_controller.route("/get/song/detail")
-def get_song_detail():
-    """
-    获取歌曲详情
-    """
-    result = copy.copy(success_json)
-    try:
-        global SERVER
         track_id = request.args.get("track_id")
-        data = SERVER.get_song_detail(track_id=track_id)
-        result["data"] = data
+        album = request.args.get("album")
+        artist = request.args.get("artist")
+        page_size = request.args.get("page_size")
+        page = request.args.get("page")
+
+        if track_id is not None and track_id is not "":
+            result["tracks"] = dbutil.select_track_by_id(connection, track_id)
+        if artist is not None and artist is not "":
+            artist_ = urllib.quote(artist)
+            result["tracks"] = dbutil.select_track_by_artist(connection, artist_, page_size, page)
+        if album is not None and album is not "":
+            album_ = urllib.quote(album)
+            result["tracks"] = dbutil.select_track_by_album(connection, album_, page_size, page)
+        if (album is None or album is "") and (artist is None or artist is ""):
+            result["tracks"] = dbutil.select_track_by_page(connection, page_size, page)
+
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -722,6 +724,29 @@ def radio_music_play():
         global PLAYER
         item_id = request.args.get("item_id")
         PLAYER.request("music playlist play item_id:" + item_id + " ")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@player_controller.route("/db/rescan")
+def db_rescan():
+    result = copy.copy(success_json)
+    try:
+        global PLAYER
+
+        db = core.DB()
+        conn = db.get_connction()
+
+        dbutil.delete_track(conn)
+        dbutil.delete_album(conn)
+        dbutil.delete_artist(conn)
+
+        dbutil.insert_tracks(SERVER, conn)
+        dbutil.insert_albums(SERVER, conn)
+        dbutil.insert_artist(SERVER, conn)
+
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
