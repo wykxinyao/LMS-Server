@@ -72,10 +72,12 @@ def search_songs():
         page = request.args.get("page")
 
         if name is None or name is "":
-            result["tracks"] = dbutil.select_track_by_page(connection, page_size, page)
+            result["tracks"] = dbutil.select_track_by_page(connection=connection, page_size=int(page_size),
+                                                           page=int(page))
         else:
-            name_ = urllib.quote(name)
-            result["tracks"] = dbutil.select_track_by_name(connection, name_, page_size, page)
+            name_ = urllib.unquote(name)
+            result["tracks"] = dbutil.select_track_by_name(connection=connection, title=str(name_), page_size=int(page_size),
+                                                           page=int(page))
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -97,10 +99,13 @@ def search_albums():
         page = request.args.get("page")
 
         if name is None or name is "":
-            result["albums"] = dbutil.select_album_by_page(connection, page_size, page)
+            result["albums"] = dbutil.select_album_by_page(connection=connection, page_size=int(page_size),
+                                                           page=int(page))
         else:
-            name_ = urllib.quote(name)
-            result["albums"] = dbutil.select_album_by_name(connection, name_, page_size, page)
+            name_ = urllib.unquote(name)
+            result["albums"] = dbutil.select_album_by_name(connection=connection, album=str(name_),
+                                                           page_size=int(page_size),
+                                                           page=int(page))
     except Exception, exp:
         result = copy.copy(fail_json)
         result["albums"] = exp.message
@@ -122,10 +127,12 @@ def search_artist():
         page = request.args.get("page")
 
         if name is None or name is "":
-            result["artists"] = dbutil.select_artist_by_page(connection, page_size, page)
+            result["artists"] = dbutil.select_artist_by_page(connection=connection, page_size=int(page_size),
+                                                             page=int(page))
         else:
-            name_ = urllib.quote(name)
-            result["artists"] = dbutil.select_artist_by_name(connection, name_, page_size, page)
+            name_ = urllib.unquote(name)
+            result["artists"] = dbutil.select_artist_by_name(connection=connection, artist=str(name_),
+                                                             page_size=int(page_size), page=int(page))
     except Exception, exp:
         result = copy.copy(fail_json)
         result["artists"] = exp.message
@@ -296,15 +303,19 @@ def find_songs():
         page = request.args.get("page")
 
         if track_id is not None and track_id is not "":
-            result["tracks"] = dbutil.select_track_by_id(connection, track_id)
+            result["tracks"] = dbutil.select_track_by_id(connection=connection, id=str(track_id))
         if artist is not None and artist is not "":
-            artist_ = urllib.quote(artist)
-            result["tracks"] = dbutil.select_track_by_artist(connection, artist_, page_size, page)
+            artist_ = urllib.unquote(artist)
+            result["tracks"] = dbutil.select_track_by_artist(connection=connection, artist=str(artist_),
+                                                             page_size=int(page_size), page=int(page))
         if album is not None and album is not "":
-            album_ = urllib.quote(album)
-            result["tracks"] = dbutil.select_track_by_album(connection, album_, page_size, page)
-        if (album is None or album is "") and (artist is None or artist is ""):
-            result["tracks"] = dbutil.select_track_by_page(connection, page_size, page)
+            album_ = urllib.unquote(album)
+            result["tracks"] = dbutil.select_track_by_album(connection=connection, album=str(album_),
+                                                            page_size=int(page_size), page=int(page))
+        if (album is None or album is "") and (artist is None or artist is "") and (
+                track_id is None or track_id is ""):
+            result["tracks"] = dbutil.select_track_by_page(connection=connection, page_size=int(page_size),
+                                                           page=int(page))
 
     except Exception, exp:
         result = copy.copy(fail_json)
@@ -743,9 +754,9 @@ def db_rescan():
         dbutil.delete_album(conn)
         dbutil.delete_artist(conn)
 
-        dbutil.insert_tracks(SERVER, conn)
-        dbutil.insert_albums(SERVER, conn)
-        dbutil.insert_artist(SERVER, conn)
+        dbutil.insert_tracks(server=SERVER, connection=conn)
+        dbutil.insert_albums(server=SERVER, connection=conn)
+        dbutil.insert_artist(server=SERVER, connection=conn)
 
     except Exception, exp:
         result = copy.copy(fail_json)

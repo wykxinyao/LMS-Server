@@ -186,10 +186,10 @@ class Server(object):
                 "artists 0 9999999 search:%s" % term)
 
     def get_all_albums(self):
-        return self.request_with_results("albums 0 9999999")
+        return self.request_with_results("albums 0 9999999")[1]
 
     def get_all_artists(self):
-        return self.request_with_results("artists 0 9999999")
+        return self.request_with_results("artists 0 9999999")[1]
 
     def rescan(self, mode='fast'):
         """

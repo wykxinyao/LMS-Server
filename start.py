@@ -26,6 +26,7 @@ try:
     sys.path.append(base_path + os.sep + 'script')
     sys.path.append(base_path + os.sep + 'utils')
     sys.path.append(base_path + os.sep + 'werkzeug')
+    sys.path.append(base_path + os.sep + 'db')
 except Exception as e:
     print e
 

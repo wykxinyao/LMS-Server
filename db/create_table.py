@@ -19,8 +19,9 @@
 """
 
 import sqlite3
+import core
 
-conn = sqlite3.connect('opera.db')
+conn = core.DB().get_connction()
 cursor = conn.cursor()
 
 # 歌曲表

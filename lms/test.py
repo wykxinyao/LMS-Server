@@ -31,16 +31,32 @@ try:
     """
     base_path = os.path.abspath('.')
     sys.path.append(base_path)
+    sys.path.append(base_path + os.sep + 'click')
     sys.path.append(base_path + os.sep + 'config')
-    sys.path.append(base_path + os.sep + 'http')
+    sys.path.append(base_path + os.sep + 'controller')
+    sys.path.append(base_path + os.sep + 'flask')
+    sys.path.append(base_path + os.sep + 'itsdangerous')
+    sys.path.append(base_path + os.sep + 'jinja2')
+    sys.path.append(base_path + os.sep + 'lms')
+    sys.path.append(base_path + os.sep + 'markupsafe')
     sys.path.append(base_path + os.sep + 'script')
     sys.path.append(base_path + os.sep + 'utils')
-    sys.path.append(base_path + os.sep + 'lms')
+    sys.path.append(base_path + os.sep + 'werkzeug')
+    sys.path.append(base_path + os.sep + 'db')
 except Exception as e:
     print e
 
 from lms.server import Server
 from lms.player import Player
 
+from db import dbutil
+from db import core
+
+import urllib
+
 server = Server(hostname="192.168.1.105", port=9090)
 server.connect()
+
+print dbutil.select_track_by_artist(core.DB().get_connction(),"Taylor Swift",3,2)
+
+

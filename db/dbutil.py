@@ -28,12 +28,23 @@ def insert_tracks(server, connection):
     cursor = connection.cursor()
     for item in songs:
         cursor.execute(
-            "insert into track (id,title,album,artist,duration) "
-            "values (?,?,?,?,?)",
-            (item['id'], item['title'], item['album'], item['artist']))
+            "insert into track(id,title,album,artist,duration) values (?,?,?,?,?)",
+            (item['id'], item['title'], item['album'], item['artist'], item['duration']))
         temp = server.get_song_detail(item['id'])
+        try:
+            _ = temp['bitrate']
+        except KeyError:
+            temp['bitrate'] = ""
+        try:
+            _ = temp['samplesize']
+        except KeyError:
+            temp['samplesize'] = ""
+        try:
+            _ = temp['samplerate']
+        except KeyError:
+            temp['samplerate'] = ""
         cursor.execute("update track set bitrate=?,samplesize=?,samplerate=?,url=? where id=?",
-                       temp['bitrate'], temp['samplesize'], temp['samplerate'], temp['url'], item['id'])
+                       (temp['bitrate'], temp['samplesize'], temp['samplerate'], temp['url'], item['id']))
     cursor.close()
     connection.commit()
 
@@ -112,7 +123,7 @@ def select_track_by_id(connection, id):
     :return: 歌曲列表
     """
     cursor = connection.cursor()
-    cursor.execute('select * from track where id=?', id)
+    cursor.execute('select * from track where id=' + id)
     values = cursor.fetchall()
     return pack_track(values)
 
@@ -188,7 +199,7 @@ def select_artist_by_page(connection, page_size, page):
     :return: 艺术家列表
     """
     cursor = connection.cursor()
-    cursor.execute('select * from artist where limit ? offset ?',
+    cursor.execute('select * from artist limit ? offset ?',
                    (page_size, (page - 1) * page_size))
     values = cursor.fetchall()
     return pack_artist_album(values)
@@ -219,7 +230,7 @@ def select_album_by_page(connection, page_size, page):
     :return: 专辑列表
     """
     cursor = connection.cursor()
-    cursor.execute('select * from artist where limit ? offset ?',
+    cursor.execute('select * from artist limit ? offset ?',
                    (page_size, (page - 1) * page_size))
     values = cursor.fetchall()
     return pack_artist_album(values)

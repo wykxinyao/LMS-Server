@@ -20,11 +20,14 @@
 
 import sqlite3
 
+TEST_PATH = '../opera.db'
+PATH = 'opera.db'
+
 
 class DB(object):
 
     def __init__(self):
-        self.connection = sqlite3.connect('opera.db')
+        self.connection = sqlite3.connect(PATH)
         self.connection.text_factory = str
 
     def get_connction(self):
