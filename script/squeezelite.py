@@ -94,9 +94,9 @@ def modify_squeezelite(content):
     :param content: 修改内容
     :return: None
     """
-    copy_success = os.popen('cp /etc/systemd/system/squeezelite.service /etc/systemd/system/squeezelite.service.back')
+    copy_success = os.popen('cp /lib/systemd/system/squeezelite.service /lib/systemd/system/squeezelite.service.back')
     if copy_success.read().strip() == "":
-        f = open('/etc/systemd/system/squeezelite.service', 'r+')
+        f = open('/lib/systemd/system/squeezelite.service', 'r+')
         f.truncate()
         f.write(
             "[Unit]\r\n" +
