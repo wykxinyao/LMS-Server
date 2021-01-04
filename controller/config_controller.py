@@ -14,6 +14,8 @@ from script import wifi as sw
 from script import lms as sl
 from script import roon as sr
 from script import naa as sn
+from script import gmrender as sg
+from script import shairport as ssp
 from script import halt as sh
 from script import reboot as sb
 from script import mount as sm
@@ -158,7 +160,7 @@ def start_squeezelite():
     """
     result = copy.copy(success_json)
     try:
-        ss.start_service()
+        start_service("squeezelite")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -186,7 +188,7 @@ def restart_squeezelite():
     """
     result = copy.copy(success_json)
     try:
-        ss.restart_service()
+        restart_service("squeezelite")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -218,7 +220,7 @@ def boot_start_squeezelite():
     """
     result = copy.copy(success_json)
     try:
-        ss.boot_start()
+        boot_start_service("squeezelite")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -370,7 +372,7 @@ def start_roon():
     """
     result = copy.copy(success_json)
     try:
-        sr.start_service()
+        start_service("roon")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -398,7 +400,7 @@ def restart_roon():
     """
     result = copy.copy(success_json)
     try:
-        sr.restart_service()
+        restart_service("roon")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -430,7 +432,7 @@ def boot_start_roon():
     """
     result = copy.copy(success_json)
     try:
-        sr.boot_start()
+        boot_start_service("roon")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -476,7 +478,7 @@ def start_naa():
     """
     result = copy.copy(success_json)
     try:
-        sn.start_service()
+        start_service("naa")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -504,7 +506,7 @@ def restart_naa():
     """
     result = copy.copy(success_json)
     try:
-        sn.restart_service()
+        restart_service("naa")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -536,7 +538,7 @@ def boot_start_naa():
     """
     result = copy.copy(success_json)
     try:
-        sn.boot_start()
+        boot_start_service("naa")
     except Exception, exp:
         result = copy.copy(fail_json)
         result["error"] = exp.message
@@ -556,6 +558,218 @@ def boot_stop_naa():
         result["error"] = exp.message
     return jsonify(result)
 
+
+@config_controller.route("/status/gmrender")
+def status_gmrender():
+    """
+    查看gmrender服务状态
+    """
+    result = copy.copy(success_json)
+    try:
+        service_result = sg.check_status()
+        if service_result:
+            result["active"] = True
+        else:
+            result["active"] = False
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/start/gmrender")
+def start_gmrender():
+    """
+    开启gmrender服务
+    """
+    result = copy.copy(success_json)
+    try:
+        start_service("gmrender")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/stop/gmrender")
+def stop_gmrender():
+    """
+    关闭gmrender服务
+    """
+    result = copy.copy(success_json)
+    try:
+        sg.stop_service()
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/restart/gmrender")
+def restart_gmrender():
+    """
+    重启gmrender服务
+    """
+    result = copy.copy(success_json)
+    try:
+        restart_service("gmrender")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_status/gmrender")
+def boot_status_gmrender():
+    """
+    查看gmrender服务开机启动状态
+    """
+    result = copy.copy(success_json)
+    try:
+        boot_result = sg.boot_status()
+        if boot_result:
+            result["enable"] = True
+        else:
+            result["enable"] = False
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_start/gmrender")
+def boot_start_gmrender():
+    """
+    设置gmrender服务开机启动
+    """
+    result = copy.copy(success_json)
+    try:
+        boot_start_service("gmrender")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_stop/gmrender")
+def boot_stop_gmrender():
+    """
+    设置gmrender服务开机不启动
+    """
+    result = copy.copy(success_json)
+    try:
+        sg.boot_stop()
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+
+@config_controller.route("/status/shairport")
+def status_shairport():
+    """
+    查看shairport服务状态
+    """
+    result = copy.copy(success_json)
+    try:
+        service_result = ssp.check_status()
+        if service_result:
+            result["active"] = True
+        else:
+            result["active"] = False
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/start/shairport")
+def start_shairport():
+    """
+    开启shairport服务
+    """
+    result = copy.copy(success_json)
+    try:
+        start_service("shairport")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/stop/shairport")
+def stop_shairport():
+    """
+    关闭shairport服务
+    """
+    result = copy.copy(success_json)
+    try:
+        ssp.stop_service()
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/restart/shairport")
+def restart_shairport():
+    """
+    重启shairport服务
+    """
+    result = copy.copy(success_json)
+    try:
+        restart_service("shairport")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_status/shairport")
+def boot_status_shairport():
+    """
+    查看shairport服务开机启动状态
+    """
+    result = copy.copy(success_json)
+    try:
+        boot_result = ssp.boot_status()
+        if boot_result:
+            result["enable"] = True
+        else:
+            result["enable"] = False
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_start/shairport")
+def boot_start_shairport():
+    """
+    设置shairport服务开机启动
+    """
+    result = copy.copy(success_json)
+    try:
+        boot_start_service("shairport")
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
+
+
+@config_controller.route("/boot_stop/shairport")
+def boot_stop_shairport():
+    """
+    设置shairport服务开机不启动
+    """
+    result = copy.copy(success_json)
+    try:
+        ssp.boot_stop()
+    except Exception, exp:
+        result = copy.copy(fail_json)
+        result["error"] = exp.message
+    return jsonify(result)
 
 @config_controller.route("/halt")
 def halt():
@@ -703,3 +917,102 @@ def restart_update():
         result = copy.copy(fail_json)
         result["error"] = exp.message
     return jsonify(result)
+
+
+def start_service(name):
+    if name == "naa":
+        sn.start_service()
+        sr.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "squeezelite":
+        ss.start_service()
+        sr.stop_service()
+        sn.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "roon":
+        sr.start_service()
+        sn.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "gmrender":
+        sg.start_service()
+        sr.stop_service()
+        ss.stop_service()
+        sn.stop_service()
+        ssp.stop_service()
+    elif name == "shairport":
+        ssp.start_service()
+        sr.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        sn.stop_service()
+
+
+def restart_service(name):
+    if name == "naa":
+        sn.restart_service()
+        sr.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "squeezelite":
+        ss.restart_service()
+        sr.stop_service()
+        sn.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "roon":
+        sr.restart_service()
+        sn.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        ssp.stop_service()
+    elif name == "gmrender":
+        sg.restart_service()
+        sr.stop_service()
+        ss.stop_service()
+        sn.stop_service()
+        ssp.stop_service()
+    elif name == "shairport":
+        ssp.restart_service()
+        sr.stop_service()
+        ss.stop_service()
+        sg.stop_service()
+        sn.stop_service()
+        
+        
+def boot_start_service(name):
+    if name == "naa":
+        sn.boot_start()
+        sr.boot_stop()
+        ss.boot_stop()
+        sg.boot_stop()
+        ssp.boot_stop()
+    elif name == "squeezelite":
+        ss.boot_start()
+        sr.boot_stop()
+        sn.boot_stop()
+        sg.boot_stop()
+        ssp.boot_stop()
+    elif name == "roon":
+        sr.boot_start()
+        sn.boot_stop()
+        ss.boot_stop()
+        sg.boot_stop()
+        ssp.boot_stop()
+    elif name == "gmrender":
+        sg.boot_start()
+        sr.boot_stop()
+        ss.boot_stop()
+        sn.boot_stop()
+        ssp.boot_stop()
+    elif name == "shairport":
+        ssp.boot_start()
+        sr.boot_stop()
+        ss.boot_stop()
+        sg.boot_stop()
+        sn.boot_stop()
