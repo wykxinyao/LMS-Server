@@ -44,11 +44,14 @@ def modify_wifi(ssid, password):
         "}"
     )
     f.close()
-    time.sleep(1)
-    os.popen("killall wpa_supplicant")
-    time.sleep(2)
-    os.popen("wpa_supplicant -Dnl80211 -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
     # os.popen("wpa_supplicant -Dnl80211 -i wlan1 -c /etc/wpa_supplicant/wpa_supplicant.conf -B")
+    for i in range(1, 10):
+        time.sleep(1)
+        os.popen("killall wpa_supplicant")
+        time.sleep(2)
+        response = os.popen("wpa_supplicant -Dnl80211 -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B").read()
+        if "already" not in response:
+            break
     time.sleep(1)
     os.popen("dhclient")
 
